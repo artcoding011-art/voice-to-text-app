@@ -15,7 +15,8 @@ const NoteEditor = ({
     onNewNote,
     onSave,
     onCancel,
-    onToggleRecording
+    onToggleRecording,
+    onToggleSidebar
 }) => {
     const chatEndRef = useRef(null);
 
@@ -27,10 +28,21 @@ const NoteEditor = ({
         <div className="main-content">
             {/* Toolbar */}
             <div className="toolbar">
-                <div className="flex flex-col">
-                    <span className="text-xs text-gray-400 font-medium text-center hover:text-gray-600 cursor-default">
-                        {selectedNote ? 'Viewing' : (hasContent ? 'Editing' : 'Ready')}
-                    </span>
+                <div className="flex items-center gap-2">
+                    {/* Mobile Only: Back to Folders */}
+                    <button
+                        onClick={onToggleSidebar}
+                        className="md:hidden flex items-center text-[#f7ce46] hover:text-[#e6c03d] font-medium -ml-2 pr-2"
+                    >
+                        <ChevronLeft size={24} />
+                        <span className="text-base">Folders</span>
+                    </button>
+
+                    <div className="flex flex-col">
+                        <span className="text-xs text-gray-400 font-medium text-center hover:text-gray-600 cursor-default">
+                            {selectedNote ? 'Viewing' : (hasContent ? 'Editing' : 'Ready')}
+                        </span>
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-4">
