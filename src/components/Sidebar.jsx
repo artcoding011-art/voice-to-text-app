@@ -1,11 +1,17 @@
 import React from 'react';
-import { Folder } from 'lucide-react';
+import { Folder, PanelLeftClose } from 'lucide-react';
 
-const Sidebar = ({ history, selectedNote, onSelectNote, onNewNote, transcript }) => {
+const Sidebar = ({ history, selectedNote, onSelectNote, onNewNote, transcript, onToggle }) => {
     return (
-        <div className="sidebar hidden md:flex">
-            <div className="toolbar bg-[#f7f7f5] justify-center font-semibold text-[11px] text-gray-600">
-                Folders
+        <div className="sidebar hidden md:flex h-full flex-col">
+            <div className="toolbar bg-[#f7f7f5] flex items-center justify-between px-4 font-semibold text-[11px] text-gray-600 border-b border-[#e5e5e5] shrink-0">
+                <span className="flex-1 text-center ml-6">Folders</span>
+                <button
+                    onClick={onToggle}
+                    className="p-1 rounded-md hover:bg-gray-200 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                    <PanelLeftClose size={16} />
+                </button>
             </div>
             <div className="p-2">
                 <div className="flex items-center gap-2 px-3 py-2 bg-[#e8e8e7] rounded-md text-[11px] font-medium">

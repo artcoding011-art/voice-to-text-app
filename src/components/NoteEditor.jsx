@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Copy, Trash2, Edit3, Mic, MicOff, ChevronLeft, Menu } from 'lucide-react';
+import { Copy, Trash2, Edit3, Mic, MicOff, ChevronLeft, Menu, PanelLeftOpen } from 'lucide-react';
 import { getCurrentDate } from '../helpers/dateUtils';
 
 const NoteEditor = ({
@@ -30,14 +30,17 @@ const NoteEditor = ({
             {/* Toolbar */}
             <div className="toolbar shrink-0 z-10 bg-white/80 backdrop-blur-md">
                 <div className="flex items-center gap-3">
-                    {/* Sidebar Toggle Button */}
-                    <button
-                        onClick={onToggleSidebar}
-                        className="p-2 -ml-2 rounded-md hover:bg-gray-100 text-gray-500 transition-colors"
-                        title={isSidebarOpen ? "Close Sidebar" : "Open Sidebar"}
-                    >
-                        {isSidebarOpen ? <ChevronLeft size={20} /> : <Menu size={20} />}
-                    </button>
+                    {/* Sidebar Toggle Button (Only visible when closed or on mobile when needed) */}
+                    {!isSidebarOpen && (
+                        <button
+                            onClick={onToggleSidebar}
+                            className="flex items-center gap-1 p-2 -ml-2 rounded-md hover:bg-gray-100 text-[#f7ce46] hover:text-[#e6c03d] transition-colors font-medium"
+                            title="Open Folders"
+                        >
+                            <PanelLeftOpen size={20} />
+                            <span className="text-sm">Folders</span>
+                        </button>
+                    )}
 
                     <div className="flex flex-col">
                         <span className="text-xs text-gray-400 font-medium cursor-default">

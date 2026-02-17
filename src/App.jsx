@@ -129,6 +129,7 @@ function App() {
             onSelectNote={handleSelectNote}
             onNewNote={handleNewNote}
             transcript={transcript}
+            onToggle={toggleSidebar}
           />
         </div>
       </div>
