@@ -94,12 +94,12 @@ body {
 
 .note-title {
   font-weight: 600;
-  font-size: 15px;
-  margin-bottom: 4px;
+  font-size: 12px;
+  margin-bottom: 2px;
 }
 
 .note-preview {
-  font-size: 13px;
+  font-size: 10px;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
