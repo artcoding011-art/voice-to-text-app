@@ -78,8 +78,8 @@ const NoteEditor = ({
             {/* Editor Area / Main Display */}
             <div className="flex-1 overflow-y-auto bg-[var(--main-bg)] relative">
                 {/* Content Container */}
-                <div className="max-w-3xl mx-auto p-8 min-h-full flex flex-col">
-                    <h1 className="text-3xl font-bold mb-4 text-[#b0b0b0] placeholder-title">
+                <div className="max-w-3xl mx-auto p-4 md:p-8 min-h-full flex flex-col">
+                    <h1 className="text-2xl md:text-3xl font-bold mb-4 text-[#b0b0b0] placeholder-title">
                         {selectedNote ? selectedNote.title : getCurrentDate()}
                     </h1>
 
