@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Copy, Trash2, Edit3, Mic, MicOff, ChevronLeft } from 'lucide-react';
+import { Copy, Trash2, Edit3, Mic, MicOff, ChevronLeft, Menu } from 'lucide-react';
 import { getCurrentDate } from '../helpers/dateUtils';
 
 const NoteEditor = ({
@@ -16,7 +16,8 @@ const NoteEditor = ({
     onSave,
     onCancel,
     onToggleRecording,
-    onToggleSidebar
+    onToggleSidebar,
+    isSidebarOpen
 }) => {
     const chatEndRef = useRef(null);
 
@@ -25,21 +26,21 @@ const NoteEditor = ({
     }, [transcript, interimTranscript, selectedNote]);
 
     return (
-        <div className="main-content">
+        <div className="flex flex-col h-full relative overflow-hidden">
             {/* Toolbar */}
-            <div className="toolbar">
-                <div className="flex items-center gap-2">
-                    {/* Mobile Only: Back to Folders */}
+            <div className="toolbar shrink-0 z-10 bg-white/80 backdrop-blur-md">
+                <div className="flex items-center gap-3">
+                    {/* Sidebar Toggle Button */}
                     <button
                         onClick={onToggleSidebar}
-                        className="md:hidden flex items-center text-[#f7ce46] hover:text-[#e6c03d] font-medium -ml-2 pr-2"
+                        className="p-2 -ml-2 rounded-md hover:bg-gray-100 text-gray-500 transition-colors"
+                        title={isSidebarOpen ? "Close Sidebar" : "Open Sidebar"}
                     >
-                        <ChevronLeft size={24} />
-                        <span className="text-base">Folders</span>
+                        {isSidebarOpen ? <ChevronLeft size={20} /> : <Menu size={20} />}
                     </button>
 
                     <div className="flex flex-col">
-                        <span className="text-xs text-gray-400 font-medium text-center hover:text-gray-600 cursor-default">
+                        <span className="text-xs text-gray-400 font-medium cursor-default">
                             {selectedNote ? 'Viewing' : (hasContent ? 'Editing' : 'Ready')}
                         </span>
                     </div>
@@ -74,20 +75,24 @@ const NoteEditor = ({
                 </div>
             </div>
 
-            {/* Editor Area */}
-            <div className="editor-area bg-[var(--main-bg)]">
-                <div className="max-w-3xl mx-auto">
-                    <h1 className="text-3xl font-bold mb-2 text-[#b0b0b0] placeholder-title">
+            {/* Editor Area / Main Display */}
+            <div className="flex-1 overflow-y-auto bg-[var(--main-bg)] relative">
+                {/* Content Container */}
+                <div className="max-w-3xl mx-auto p-8 min-h-full flex flex-col">
+                    <h1 className="text-3xl font-bold mb-4 text-[#b0b0b0] placeholder-title">
                         {selectedNote ? selectedNote.title : getCurrentDate()}
                     </h1>
 
-                    {!selectedNote && (
-                        <div className="text-gray-400 text-lg mb-8">
-                            {isListening ? 'Listening...' : (hasContent ? 'Review your note' : 'Press microphone to start')}
+                    {/* Empty State / Listening Indicator */}
+                    {!selectedNote && !hasContent && (
+                        <div className="flex-1 flex flex-col justify-center items-center h-64 transition-opacity duration-300">
+                            <div className="text-gray-300 text-xl font-light mb-8 animate-pulse">
+                                {isListening ? 'Listening...' : 'Tap microphone to start'}
+                            </div>
                         </div>
                     )}
 
-                    <div className="text-[var(--text-primary)] whitespace-pre-wrap leading-relaxed min-h-[200px]">
+                    <div className="text-[var(--text-primary)] whitespace-pre-wrap leading-relaxed min-h-[100px] text-lg">
                         {selectedNote ? selectedNote.content : (
                             <>
                                 {transcript}
@@ -99,7 +104,7 @@ const NoteEditor = ({
 
                     {/* Save/Cancel Actions */}
                     {!selectedNote && !isListening && hasContent && (
-                        <div className="flex gap-4 mt-8 justify-center">
+                        <div className="flex gap-4 mt-12 justify-center fade-in">
                             <button
                                 onClick={onCancel}
                                 className="px-6 py-2 rounded-full border border-gray-300 text-gray-500 hover:bg-gray-100 transition-colors"
@@ -108,7 +113,7 @@ const NoteEditor = ({
                             </button>
                             <button
                                 onClick={onSave}
-                                className="px-8 py-2 rounded-full bg-[#f7ce46] text-white hover:bg-[#e6c03d] shadow-md transition-transform transform hover:scale-105 font-medium"
+                                className="px-8 py-2 rounded-full bg-[#f7ce46] text-white hover:bg-[#e6c03d] shadow-lg transform transition hover:-translate-y-0.5"
                             >
                                 Save Note
                             </button>
@@ -117,18 +122,40 @@ const NoteEditor = ({
                 </div>
             </div>
 
-            {/* Floating Mic Button */}
-            {!selectedNote && (!hasContent || isListening) ? (
-                <div className="p-6 flex justify-center pb-8 bg-gradient-to-t from-white via-white to-transparent">
+            {/* Centered Floating Mic Button */}
+            {!selectedNote && (
+                <div
+                    className={`absolute left-1/2 transform -translate-x-1/2 transition-all duration-500 ease-in-out z-20
+                    ${hasContent && !isListening ? 'bottom-8' : 'top-1/2 -translate-y-1/2'} 
+                    `}
+                >
                     <button
                         onClick={onToggleRecording}
-                        className={`p-4 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 ${isListening ? 'bg-red-500 text-white recording-pulse' : 'bg-[#f7ce46] text-white hover:bg-[#e6c03d]'
-                            }`}
+                        className={`
+                            relative group flex items-center justify-center rounded-full shadow-2xl transition-all duration-300
+                            ${isListening ? 'w-24 h-24 bg-gradient-to-br from-red-500 to-pink-600' : 'w-20 h-20 bg-gradient-to-br from-[#f7ce46] to-[#e6c03d] hover:scale-110'}
+                        `}
                     >
-                        {isListening ? <MicOff size={28} /> : <Mic size={28} />}
+                        {/* Ripple Effect when listening */}
+                        {isListening && (
+                            <span className="absolute inset-0 rounded-full animate-ping bg-red-400 opacity-20"></span>
+                        )}
+                        {isListening && (
+                            <span className="absolute -inset-4 rounded-full border border-red-200 opacity-40 animate-pulse"></span>
+                        )}
+
+                        {/* Icons */}
+                        {isListening ? (
+                            <MicOff size={32} className="text-white relative z-10" />
+                        ) : (
+                            <Mic size={32} className="text-white relative z-10" />
+                        )}
+
+                        {/* Shine effect */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
                 </div>
-            ) : null}
+            )}
         </div>
     );
 };
