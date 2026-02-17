@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Copy, Trash2, Edit3, Mic, MicOff } from 'lucide-react';
+import { Copy, Trash2, Edit3, Mic, MicOff, ChevronLeft } from 'lucide-react';
 import { getCurrentDate } from '../helpers/dateUtils';
 
 const NoteEditor = ({

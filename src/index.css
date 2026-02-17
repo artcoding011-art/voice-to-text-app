@@ -59,6 +59,8 @@ body {
   display: flex;
   flex-direction: column;
   background-color: var(--main-bg);
+  min-width: 0;
+  /* Prevent flex blowout */
 }
 
 .toolbar {
@@ -143,4 +145,29 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #b0b0b0;
+}
+
+/* --- Mobile Optimization (iPhone 13 Mini & others) --- */
+@media (max-width: 768px) {
+  .mac-window {
+    width: 100%;
+    height: 100vh;
+    /* Full viewport height */
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  .editor-area {
+    padding: 20px;
+    /* Reduced padding */
+    font-size: 16px;
+    /* Slightly smaller text */
+  }
+
+  .sidebar {
+    width: 100%;
+    /* Full width when visible */
+    border-right: none;
+  }
 }

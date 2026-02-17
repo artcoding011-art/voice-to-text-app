@@ -23,6 +23,9 @@ function App() {
 
   const [selectedNote, setSelectedNote] = useState(null);
 
+  // Mobile navigation state
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+
   const toggleRecording = () => {
     if (isListening) {
       stopListening();
@@ -65,12 +68,14 @@ function App() {
       stopListening();
     }
     setSelectedNote(note);
+    setShowMobileSidebar(false); // Close sidebar on mobile after selection
   };
 
   const handleNewNote = () => {
     if (isListening) return; // Already new note mode basically
     setSelectedNote(null);
     clearTranscript();
+    setShowMobileSidebar(false); // Switch to editor view
   };
 
   const handleDeleteNote = (id) => {
@@ -82,33 +87,44 @@ function App() {
     }
   }
 
+  const toggleMobileSidebar = () => {
+    setShowMobileSidebar(!showMobileSidebar);
+  };
+
   const hasContent = transcript.length > 0;
 
   return (
     <div className="mac-window">
-      <Sidebar
-        history={history}
-        selectedNote={selectedNote}
-        onSelectNote={handleSelectNote}
-        onNewNote={handleNewNote}
-        transcript={transcript}
-      />
+      {/* Sidebar - Visible on Desktop OR when showMobileSidebar is true on mobile */}
+      <div className={`${showMobileSidebar ? 'flex' : 'hidden'} md:flex w-full md:w-[280px]`}>
+        <Sidebar
+          history={history}
+          selectedNote={selectedNote}
+          onSelectNote={handleSelectNote}
+          onNewNote={handleNewNote}
+          transcript={transcript}
+        />
+      </div>
 
-      <NoteEditor
-        selectedNote={selectedNote}
-        transcript={transcript}
-        interimTranscript={interimTranscript}
-        isListening={isListening}
-        hasContent={hasContent}
-        language={language}
-        setLanguage={setLanguage}
-        onCopy={handleCopy}
-        onDelete={handleDeleteNote}
-        onNewNote={handleNewNote}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        onToggleRecording={toggleRecording}
-      />
+      {/* Editor - Hidden on mobile if sidebar is showing */}
+      <div className={`${showMobileSidebar ? 'hidden' : 'flex'} md:flex flex-1 min-w-0`}>
+        <NoteEditor
+          selectedNote={selectedNote}
+          transcript={transcript}
+          interimTranscript={interimTranscript}
+          isListening={isListening}
+          hasContent={hasContent}
+          language={language}
+          setLanguage={setLanguage}
+          onCopy={handleCopy}
+          onDelete={handleDeleteNote}
+          onNewNote={handleNewNote}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          onToggleRecording={toggleRecording}
+          onToggleSidebar={toggleMobileSidebar} // Pass toggle function
+        />
+      </div>
     </div>
   )
 }
