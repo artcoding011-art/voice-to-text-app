@@ -23,16 +23,14 @@ function App() {
 
   const [selectedNote, setSelectedNote] = useState(null);
 
-  // Sidebar state (Default closed as requested)
-  // We use a single state, but behavior differs by screen size
+  // Sidebar state (Default closed)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Handle Resize to auto-close on mobile if needed, or adjust layout
+  // Handle Resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        // Optional: auto-close sidebar on resize to mobile to prevent breakage
-        // setIsSidebarOpen(false); 
+        // Optional logic
       }
     };
     window.addEventListener('resize', handleResize);
@@ -81,7 +79,6 @@ function App() {
       stopListening();
     }
     setSelectedNote(note);
-    // On mobile, close sidebar after selection
     if (window.innerWidth < 768) {
       setIsSidebarOpen(false);
     }
@@ -115,23 +112,17 @@ function App() {
     <div className="mac-window relative flex h-full overflow-hidden">
 
       {/* Sidebar Container */}
-      {/* Mobile: Absolute overlay (z-30) to sit on top of editor. 
-          Desktop: Relative flow (z-0) to push editor. */}
-
       <div
         className={`
             transition-all duration-300 ease-in-out bg-[#f7f7f5] border-r border-[#e5e5e5] flex-shrink-0
-            ${isSidebarOpen ? 'w-full md:w-[280px]' : 'w-0 border-none'}
+            ${isSidebarOpen ? 'w-[85vw] md:w-[280px]' : 'w-0 border-none'}
             
-            /* Mobile-specific: Absolute positioning when open to cover screen (Drawer) */
-            md:relative absolute z-30 h-full
+            fixed md:relative z-30 h-full
             ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-            md:transform-none /* Reset transform on desktop so it works with width transition */
+            md:transform-none
         `}
       >
-        <div className="w-full md:w-[280px] h-full flex flex-col overflow-hidden whitespace-nowrap">
-          {/* Only render contents if width is sufficient to avoid weird squeezing visually during transition if needed, 
-                 but CSS overflow-hidden handles it. */}
+        <div className="w-[85vw] md:w-[280px] h-full flex flex-col overflow-hidden whitespace-nowrap">
           <Sidebar
             history={history}
             selectedNote={selectedNote}
