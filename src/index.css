@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Internal:wght@300;400;600;700&display=swap');
+/* Using system fonts mostly */
+
+:root {
+  --sidebar-bg: #f7f7f5;
+  /* MacOS Note list bg */
+  --main-bg: #ffffff;
+  --text-primary: #1c1c1e;
+  --text-secondary: #8e8e93;
+  --accent-color: #f7ce46;
+  /* MacOS Notes yellow accent */
+  --separator-color: #e5e5e5;
+  --toolbar-height: 52px;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background-color: #eef0f2;
+  /* Desktop background */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mac-window {
+  width: 90vw;
+  max-width: 1200px;
+  height: 85vh;
+  background: var(--main-bg);
+  border-radius: 10px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  display: flex;
+  overflow: hidden;
+  border: 1px solid #d1d1d1;
+}
+
+.sidebar {
+  width: 280px;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--separator-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--main-bg);
+}
+
+.toolbar {
+  height: var(--toolbar-height);
+  border-bottom: 1px solid var(--separator-color);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  justify-content: space-between;
+}
+
+.editor-area {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  font-size: 18px;
+  line-height: 1.6;
+  outline: none;
+}
+
+.note-item {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--separator-color);
+  cursor: pointer;
+}
+
+.note-item.active {
+  background-color: #ffeba0;
+  /* Active note yellow */
+}
+
+.note-title {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.note-preview {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Animations */
+@keyframes pulse-record {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4);
+  }
+
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(255, 59, 48, 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 59, 48, 0);
+  }
+}
+
+.recording-pulse {
+  animation: pulse-record 1.5s infinite;
+  color: #ff3b30;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d1d1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}
