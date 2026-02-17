@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import useSpeechRecognition from './hooks/useSpeechRecognition'
 import Sidebar from './components/Sidebar'
 import NoteEditor from './components/NoteEditor'
@@ -23,8 +23,21 @@ function App() {
 
   const [selectedNote, setSelectedNote] = useState(null);
 
-  // Mobile navigation state
-  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  // Sidebar state (Default closed as requested)
+  // We use a single state, but behavior differs by screen size
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Handle Resize to auto-close on mobile if needed, or adjust layout
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        // Optional: auto-close sidebar on resize to mobile to prevent breakage
+        // setIsSidebarOpen(false); 
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleRecording = () => {
     if (isListening) {
@@ -68,14 +81,19 @@ function App() {
       stopListening();
     }
     setSelectedNote(note);
-    setShowMobileSidebar(false); // Close sidebar on mobile after selection
+    // On mobile, close sidebar after selection
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
   };
 
   const handleNewNote = () => {
     if (isListening) return; // Already new note mode basically
     setSelectedNote(null);
     clearTranscript();
-    setShowMobileSidebar(false); // Switch to editor view
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
   };
 
   const handleDeleteNote = (id) => {
@@ -87,27 +105,53 @@ function App() {
     }
   }
 
-  const toggleMobileSidebar = () => {
-    setShowMobileSidebar(!showMobileSidebar);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   const hasContent = transcript.length > 0;
 
   return (
-    <div className="mac-window">
-      {/* Sidebar - Visible on Desktop OR when showMobileSidebar is true on mobile */}
-      <div className={`${showMobileSidebar ? 'flex' : 'hidden'} md:flex w-full md:w-[280px]`}>
-        <Sidebar
-          history={history}
-          selectedNote={selectedNote}
-          onSelectNote={handleSelectNote}
-          onNewNote={handleNewNote}
-          transcript={transcript}
-        />
+    <div className="mac-window relative flex h-full overflow-hidden">
+
+      {/* Sidebar Container */}
+      {/* Mobile: Absolute overlay (z-30) to sit on top of editor. 
+          Desktop: Relative flow (z-0) to push editor. */}
+
+      <div
+        className={`
+            transition-all duration-300 ease-in-out bg-[#f7f7f5] border-r border-[#e5e5e5] flex-shrink-0
+            ${isSidebarOpen ? 'w-full md:w-[280px]' : 'w-0 border-none'}
+            
+            /* Mobile-specific: Absolute positioning when open to cover screen (Drawer) */
+            md:relative absolute z-30 h-full
+            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+            md:transform-none /* Reset transform on desktop so it works with width transition */
+        `}
+      >
+        <div className="w-full md:w-[280px] h-full flex flex-col overflow-hidden whitespace-nowrap">
+          {/* Only render contents if width is sufficient to avoid weird squeezing visually during transition if needed, 
+                 but CSS overflow-hidden handles it. */}
+          <Sidebar
+            history={history}
+            selectedNote={selectedNote}
+            onSelectNote={handleSelectNote}
+            onNewNote={handleNewNote}
+            transcript={transcript}
+          />
+        </div>
       </div>
 
-      {/* Editor - Hidden on mobile if sidebar is showing */}
-      <div className={`${showMobileSidebar ? 'hidden' : 'flex'} md:flex flex-1 min-w-0`}>
+      {/* Overlay for mobile when sidebar is open */}
+      {isSidebarOpen && (
+        <div
+          className="absolute inset-0 bg-black/50 z-20 md:hidden backdrop-blur-sm"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0 bg-white h-full relative z-10">
         <NoteEditor
           selectedNote={selectedNote}
           transcript={transcript}
@@ -122,7 +166,8 @@ function App() {
           onSave={handleSave}
           onCancel={handleCancel}
           onToggleRecording={toggleRecording}
-          onToggleSidebar={toggleMobileSidebar} // Pass toggle function
+          onToggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
         />
       </div>
     </div>
