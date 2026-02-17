@@ -3,7 +3,7 @@ import { Folder, PanelLeftClose } from 'lucide-react';
 
 const Sidebar = ({ history, selectedNote, onSelectNote, onNewNote, transcript, onToggle }) => {
     return (
-        <div className="sidebar hidden md:flex h-full flex-col">
+        <div className="sidebar flex h-full flex-col w-full">
             <div className="toolbar bg-[#f7f7f5] flex items-center justify-between px-4 font-semibold text-[11px] text-gray-600 border-b border-[#e5e5e5] shrink-0">
                 <span className="flex-1 text-center ml-6">Folders</span>
                 <button
